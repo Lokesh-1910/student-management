@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome | Student Management System</title>
+  <link rel="stylesheet" href="welcome.css" />
+  <style>
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      animation: slideIn 0.5s forwards;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="notification" id="notif">✅ You have successfully logged in.</div>
+
+  <header class="navbar">
+    <h1>Student Management System</h1>
+    <div class="menu-container">
+      <button class="menu-btn">⋮</button>
+      <div class="dropdown">
+        <img src="profile.jpg" alt="Profile" class="profile-pic" />
+        <a href="profile.html">View Profile</a>
+        <a href="upload10.html">Upload 10th Marks</a>
+        <a href="upload11.html">Upload 11th Marks</a>
+        <a href="upload12.html">Upload 12th Marks</a>
+        <a href="#">Upload College Marks</a>
+        <a href="#">Extra Curricular Activities</a>
+        <a href="#">Achievements</a>
+        <a href="#">Feedback</a>
+        <a href="#">Settings</a>
+        <a href="logout.html">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="slideshow-container">
+    <div class="slide fade">
+      <img src="img1.jpg" alt="Slide 1">
+    </div>
+    <div class="slide fade">
+      <img src="img2.jpg" alt="Slide 2">
+    </div>
+    <div class="slide fade">
+      <img src="img3.jpg" alt="Slide 3">
+    </div>
+    <div class="slide fade">
+      <img src="img4.jpg" alt="Slide 4">
+    </div>
+    <div class="slide fade">
+      <img src="img5.jpg" alt="Slide 5">
+    </div>
+  </section>
+
+  <main class="container">
+
+    <a href="upload10.html" class="upload-link">
+      <section class="upload-section">
+        <h2>📚 Upload 10th Marks</h2>
+        <p>Click here to enter subject-wise marks, exam number, and year.</p>
+      </section>
+    </a>
+
+    <a href="upload11.html" class="upload-link">
+      <section class="upload-section">
+        <h2>📘 Upload 11th Marks</h2>
+        <p>Upload your 11th standard progress report or annual result.</p>
+      </section>
+    </a>
+
+    <a href="upload12.html" class="upload-link">
+      <section class="upload-section">
+        <h2>📕 Upload 12th Marks</h2>
+        <p>Attach your final 12th standard marksheet. This is typically used during placements and college
+          verifications.
+        </p>
+      </section>
+    </a>
+
+    <a href="uploadcollege.html" class="upload-link"></a>
+    <section class="upload-section">
+      <h2>🎓 Upload College Marks & Grades</h2>
+      <p>Upload consolidated college marksheets or semester-wise . Clearly label your files with semester info.</p>
+    </section></a>
+
+    <section class="upload-section">
+      <h2>🏅 Extra Curricular Activities</h2>
+      <p>Write a short summary of clubs, sports, volunteering, or other activities you've participated in.</p>
+      <textarea placeholder="Eg: Captain of college football team, active NSS volunteer..."></textarea>
+    </section>
+
+    <section class="upload-section">
+      <h2>🏆 Achievements</h2>
+      <p>Mention notable achievements like awards, competition wins, scholarships, or certifications.</p>
+      <textarea placeholder="Eg: Winner of TechFest coding challenge 2023, Google Cloud Certified..."></textarea>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Student Management System. All rights reserved.</p>
+    <p>Contact us: support@smsproject.com</p>
+  </footer>
+
+  <script>
+    let slideIndex = 0;
+    showSlides();
+
+    function showSlides() {
+      const slides = document.getElementsByClassName("slide");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 3000); // Change image every 3s
+    }
+  </script>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById('notif').style.display = 'none';
+    }, 3000); // Hide after 3 seconds
+  </script>
+
+</body>
+
+</html>

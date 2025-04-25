@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logout | Student Management System</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      opacity: 0;
+      animation: slideIn 0.5s forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .message-box {
+      text-align: center;
+    }
+
+    .message-box h2 {
+      color: #333;
+    }
+
+    .message-box p {
+      color: #555;
+    }
+
+    .message-box a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .message-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notif">✅ You have been logged out successfully.</div>
+
+  <div class="message-box">
+    <h2>See you again!</h2>
+    <p>You are now logged out.</p>
+    <p>Redirecting to <a href="login.html">Login page</a>...</p>
+  </div>
+
+  <script>
+    // Clear stored user ID or session info
+    localStorage.removeItem('user_id');
+
+    // Auto redirect to login page after 3 seconds
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 3000);
+  </script>
+</body>
+</html>

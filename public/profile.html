@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+  <link rel="stylesheet" href="form.css" />
+  <style>
+    .profile-container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f4f4f4;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .profile-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-detail {
+      margin: 10px 0;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h2>👤 User Profile</h2>
+    <div class="profile-detail"><span class="label">First Name:</span> <span id="firstname"></span></div>
+    <div class="profile-detail"><span class="label">Last Name:</span> <span id="lastname"></span></div>
+    <div class="profile-detail"><span class="label">Date of Birth:</span> <span id="dob"></span></div>
+    <div class="profile-detail"><span class="label">Gender:</span> <span id="gender"></span></div>
+    <div class="profile-detail"><span class="label">Email:</span> <span id="email"></span></div>
+    <div class="profile-detail"><span class="label">Mobile:</span> <span id="mobile"></span></div>
+  </div>
+
+  <script>
+    // Assume a user is logged in and their user_id is stored in localStorage or session (basic simulation)
+    const userId = localStorage.getItem("user_id") || 1; // Default to 1 for now
+
+    fetch(`/user-profile?id=${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("firstname").textContent = data.firstname;
+        document.getElementById("lastname").textContent = data.lastname;
+        document.getElementById("dob").textContent = data.dob;
+        document.getElementById("gender").textContent = data.gender;
+        document.getElementById("email").textContent = data.email;
+        document.getElementById("mobile").textContent = data.mobile;
+      })
+      .catch(err => {
+        alert("Error fetching user data");
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
