@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Marks | Student Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .header h1 {
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .semester-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .semester-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .semester-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .semester-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .semester-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .semester-title {
+      font-size: 1.3rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .semester-status {
+      background: var(--success);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background: var(--warning);
+    }
+
+    .status-failed {
+      background: var(--danger);
+    }
+
+    .semester-details {
+      margin-bottom: 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .detail-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .detail-value {
+      font-weight: 500;
+    }
+
+    .cgpa {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(67, 97, 238, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .no-results i {
+      font-size: 3rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    .no-results h3 {
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .no-results p {
+      color: #999;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .semester-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 20px 15px;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header fade-in">
+    <h1><i class="fas fa-university"></i> College Marks & Grades</h1>
+    <p>View and manage your semester-wise academic performance. Upload marksheets for each semester.</p>
+  </div>
+
+  <div class="semester-container">
+    <!-- Semester 1 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 1</div>
+        <div class="semester-status">Completed</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">22/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">1</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">Dec 2021</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">99.64%</span>
+        </div>
+      </div>
+      <div class="cgpa">8.2</div>
+      <div class="action-buttons">
+        <a href="semester1.html" class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </a>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 2 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 2</div>
+        <div class="semester-status">Completed</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">24/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">0</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">May 2022</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">84.64%</span>
+        </div>
+      </div>
+      <div class="cgpa">8.7</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 3 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 3</div>
+        <div class="semester-status">Completed</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">23/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">1</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">Dec 2022</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">92.01%</span>
+        </div>
+      </div>
+      <div class="cgpa">8.4</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 4 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 4</div>
+        <div class="semester-status">In Progress</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">?/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">May 2023</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">89.24%</span>
+        </div>
+      </div>
+      <div class="cgpa">-</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 5 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 5</div>
+        <div class="semester-status">Upcoming</Progress></div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">?/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">Dec 2023</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">-%</span>
+        </div>
+      </div>
+      <div class="cgpa">-</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 6 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 6</div>
+        <div class="semester-status">Not Started</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">?/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Result Date:</span>
+          <span class="detail-value">May 2024</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">-%</span>
+        </div>
+      </div>
+      <div class="cgpa">-</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 7 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 7</div>
+        <div class="semester-status status-pending">Not Started</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits Earned:</span>
+          <span class="detail-value">?/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Backlogs:</span>
+          <span class="detail-value">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Expected Result:</span>
+          <span class="detail-value">Dec 2024</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">-%</span>
+        </div>
+      </div>
+      <div class="cgpa">-</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" disabled>
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline" disabled>
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+
+    <!-- Semester 8 -->
+    <div class="semester-card fade-in">
+      <div class="semester-header">
+        <div class="semester-title">Semester 8</div>
+        <div class="semester-status">Not Started</div>
+      </div>
+      <div class="semester-details">
+        <div class="detail-row">
+          <span class="detail-label">Credits:</span>
+          <span class="detail-value">?/24</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value">Not Started</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Expected Result:</span>
+          <span class="detail-value">May 2025</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attendance Percentage:</span>
+          <span class="detail-value">-%</span>
+        </div>
+      </div>
+      <div class="cgpa">-</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" disabled>
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <button class="btn btn-outline" disabled>
+          <i class="fas fa-eye"></i> View
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // This would be replaced with actual data fetching
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simulate loading data
+      setTimeout(() => {
+        // Enable buttons for completed semesters
+        const completedCards = document.querySelectorAll('.semester-status:not(.status-pending):not(:contains("Upcoming"))');
+        completedCards.forEach(card => {
+          const buttons = card.closest('.semester-card').querySelectorAll('.btn');
+          buttons.forEach(btn => btn.disabled = false);
+        });
+        
+        // Add click handlers
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const semester = this.closest('.semester-card').querySelector('.semester-title').textContent;
+            alert(`Upload marksheet for ${semester}`);
+          });
+        });
+        
+        document.querySelectorAll('.btn-outline').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const semester = this.closest('.semester-card').querySelector('.semester-title').textContent;
+            alert(`View marksheet for ${semester}`);
+          });
+        });
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

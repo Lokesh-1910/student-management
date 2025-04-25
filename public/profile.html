@@ -2,61 +2,353 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>User Profile</title>
-  <link rel="stylesheet" href="form.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | Student Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .profile-container {
-      max-width: 500px;
-      margin: 50px auto;
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding: 20px;
-      border-radius: 10px;
-      background: #f4f4f4;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .profile-container h2 {
+    .profile-container {
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      animation: fadeInUp 0.8s ease;
+      position: relative;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .profile-sidebar {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 40px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-sidebar::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-sidebar::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid rgba(255, 255, 255, 0.2);
       margin-bottom: 20px;
+      transition: all 0.3s ease;
+      z-index: 2;
     }
 
-    .profile-detail {
-      margin: 10px 0;
+    .profile-pic:hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
     }
 
-    .label {
-      font-weight: bold;
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      z-index: 2;
+    }
+
+    .profile-email {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      z-index: 2;
+    }
+
+    .edit-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 50px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .edit-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .profile-content {
+      padding: 40px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-header h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+    }
+
+    .detail-card {
+      background: var(--light);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--accent);
+    }
+
+    .detail-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: #666;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .detail-value {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(67, 97, 238, 0.2);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-sidebar {
+        padding: 30px 20px;
+      }
+      
+      .profile-content {
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .profile-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-header h2 {
+        font-size: 1.5rem;
+      }
+      
+      .profile-pic {
+        width: 120px;
+        height: 120px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="profile-container">
-    <h2>👤 User Profile</h2>
-    <div class="profile-detail"><span class="label">First Name:</span> <span id="firstname"></span></div>
-    <div class="profile-detail"><span class="label">Last Name:</span> <span id="lastname"></span></div>
-    <div class="profile-detail"><span class="label">Date of Birth:</span> <span id="dob"></span></div>
-    <div class="profile-detail"><span class="label">Gender:</span> <span id="gender"></span></div>
-    <div class="profile-detail"><span class="label">Email:</span> <span id="email"></span></div>
-    <div class="profile-detail"><span class="label">Mobile:</span> <span id="mobile"></span></div>
+    <div class="profile-sidebar">
+      <img src="https://source.unsplash.com/random/300x300/?portrait" alt="Profile Picture" class="profile-pic" id="profile-pic">
+      <h1 class="profile-name" id="fullname">Loading...</h1>
+      <div class="profile-email" id="email">user@example.com</div>
+      <button class="edit-btn" id="edit-profile">
+        <i class="fas fa-edit"></i> Edit Profile
+      </button>
+    </div>
+    
+    <div class="profile-content">
+      <div class="profile-header">
+        <h2><i class="fas fa-user-circle"></i> Personal Details</h2>
+        <button class="edit-btn" id="edit-details">
+          <i class="fas fa-pencil-alt"></i> Edit
+        </button>
+      </div>
+      
+      <div class="profile-details" id="profile-details">
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Assume a user is logged in and their user_id is stored in localStorage or session (basic simulation)
-    const userId = localStorage.getItem("user_id") || 1; // Default to 1 for now
-
-    fetch(`/user-profile?id=${userId}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("firstname").textContent = data.firstname;
-        document.getElementById("lastname").textContent = data.lastname;
-        document.getElementById("dob").textContent = data.dob;
-        document.getElementById("gender").textContent = data.gender;
-        document.getElementById("email").textContent = data.email;
-        document.getElementById("mobile").textContent = data.mobile;
-      })
-      .catch(err => {
-        alert("Error fetching user data");
-        console.error(err);
-      });
+    // Simulate loading user data
+    document.addEventListener('DOMContentLoaded', function() {
+      const userId = localStorage.getItem("user_id") || 1;
+      
+      // Show loading state
+      const profileDetails = document.getElementById('profile-details');
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        // This would be replaced with actual fetch call
+        // fetch(`/user-profile?id=${userId}`).then(...)
+        
+        // Mock user data
+        const userData = {
+          firstname: "John",
+          lastname: "Doe",
+          dob: "1995-05-15",
+          gender: "Male",
+          email: "john.doe@example.com",
+          mobile: "+1 (555) 123-4567",
+          address: "123 Main St, Anytown, USA",
+          joined: "January 2020"
+        };
+        
+        // Update profile
+        document.getElementById('fullname').textContent = `${userData.firstname} ${userData.lastname}`;
+        document.getElementById('email').textContent = userData.email;
+        document.getElementById('profile-pic').src = `https://source.unsplash.com/random/300x300/?portrait,${userData.firstname}`;
+        
+        // Generate details cards
+        profileDetails.innerHTML = `
+          <div class="detail-card">
+            <div class="detail-label">First Name</div>
+            <div class="detail-value" id="firstname">${userData.firstname}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Last Name</div>
+            <div class="detail-value" id="lastname">${userData.lastname}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Date of Birth</div>
+            <div class="detail-value" id="dob">${new Date(userData.dob).toLocaleDateString()}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Gender</div>
+            <div class="detail-value" id="gender">${userData.gender}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Email</div>
+            <div class="detail-value" id="email-detail">${userData.email}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Mobile</div>
+            <div class="detail-value" id="mobile">${userData.mobile}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Address</div>
+            <div class="detail-value" id="address">${userData.address}</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Member Since</div>
+            <div class="detail-value" id="joined">${userData.joined}</div>
+          </div>
+        `;
+        
+        // Add edit functionality
+        document.getElementById('edit-profile').addEventListener('click', function() {
+          alert('Edit profile functionality would open a modal or form here');
+        });
+        
+        document.getElementById('edit-details').addEventListener('click', function() {
+          alert('Edit details functionality would open a modal or form here');
+        });
+        
+      }, 1500); // Simulate network delay
+    });
   </script>
 </body>
 </html>

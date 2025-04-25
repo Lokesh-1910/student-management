@@ -71,15 +71,22 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Profile route to fetch user data
-app.get('/user-profile', (req, res) => {
-  const userId = req.query.id;
+// Route to fetch user data based on user ID
+app.get('/profile/:id', (req, res) => {
+  const userId = req.params.id;
 
-  db.query('SELECT firstname, lastname, dob, gender, email, mobile FROM users WHERE id = ?', [userId], (err, results) => {
-    if (err) return res.status(500).send('Error fetching data');
-    if (results.length === 0) return res.status(404).send('User not found');
+  const sql = 'SELECT * FROM users WHERE id = ?';
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error('Error fetching user data:', err);
+      return res.status(500).json({ error: 'Failed to fetch user data' });
+    }
 
-    res.json(results[0]);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(result[0]); // Send user details
   });
 });
 
@@ -94,7 +101,7 @@ app.post('/upload10', (req, res) => {
       if (err.code === 'ER_DUP_ENTRY') return res.send('Exam Number already exists');
       return res.status(500).send('Database Error');
     }
-    res.send(`<script>alert('10th Marks Uploaded Successfully'); window.location.href = '/welcome.html';</script>`);
+    res.sendFile(__dirname + '/public/uploadsuccess.html');
   });
 });
 
@@ -198,7 +205,7 @@ app.post('/upload11', (req, res) => {
       console.error('Error inserting 11th marks:', err);
       return res.status(500).send('Error inserting marks into the database.');
     }
-    res.sendFile(path.join(__dirname, 'path/to/success.html'));
+    res.sendFile(__dirname + '/public/uploadsuccess.html');
   });
 });
 
@@ -303,7 +310,7 @@ app.post('/upload12', (req, res) => {
       console.error('Error inserting 12th marks:', err);
       return res.status(500).send('Error inserting marks into the database.');
     }
-    res.sendFile(path.join(__dirname, 'path/to/success.html'));
+    res.sendFile(__dirname + '/public/uploadsuccess.html');
   });
 });
 

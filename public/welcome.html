@@ -3,21 +3,71 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome | Student Management System</title>
-  <link rel="stylesheet" href="welcome.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    body {
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* Vanta Background Container */
+    .vanta-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .notification {
       position: fixed;
       top: 20px;
       right: 20px;
-      background-color: #4caf50;
+      background-color: var(--success);
       color: white;
       padding: 15px 25px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       opacity: 0;
-      animation: slideIn 0.5s forwards;
+      animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
       z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     @keyframes slideIn {
@@ -25,129 +75,622 @@
         opacity: 0;
         transform: translateX(100%);
       }
-
       to {
         opacity: 1;
         transform: translateX(0);
       }
     }
-  </style>
 
+    @keyframes fadeOut {
+      to { opacity: 0; }
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: rgba(15, 15, 197, 0.7);
+      color: white;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 100;
+    }
+
+    .navbar h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, #fff, #f8f9fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .menu-container {
+      position: relative;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .menu-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 250px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .menu-container:hover .dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: block;
+      margin: 20px auto;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 12px 20px;
+      color: var(--dark);
+      text-decoration: none;
+      transition: all 0.3s;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown a:hover {
+      background: #f5f7fa;
+      color: var(--primary);
+      padding-left: 25px;
+    }
+
+    .dropdown a:last-child {
+      border-bottom: none;
+      color: var(--danger);
+    }
+
+    /* Slideshow */
+    .slideshow-container {
+      position: relative;
+      max-width: 100%;
+      height: 500px;
+      overflow: hidden;
+      margin: 30px auto;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      width: 90%;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.8);
+      transition: transform 8s ease;
+    }
+
+    .slide.active img {
+      transform: scale(1.05);
+    }
+
+    .slide-content {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      color: white;
+      max-width: 500px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.5s ease 0.3s;
+    }
+
+    .slide.active .slide-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .slide-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .slide-content p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .dots-container {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    /* Main Content */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 40px 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .upload-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .upload-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .upload-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .upload-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .upload-section p {
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .upload-section textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      resize: vertical;
+      min-height: 100px;
+      transition: all 0.3s;
+    }
+
+    .upload-section textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+    }
+
+    .upload-section::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .upload-section:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 50, 0.7);
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    footer p {
+      margin: 10px 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px;
+      }
+      
+      .navbar h1 {
+        font-size: 1.4rem;
+      }
+      
+      .slideshow-container {
+        height: 350px;
+      }
+      
+      .slide-content {
+        left: 20px;
+        bottom: 20px;
+        max-width: 80%;
+      }
+      
+      .slide-content h2 {
+        font-size: 1.8rem;
+      }
+      
+      .container {
+        grid-template-columns: 1fr;
+        padding: 25px;
+      }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(67, 97, 238, 0.1);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 
 <body>
-  <div class="notification" id="notif">✅ You have successfully logged in.</div>
+  <!-- Vanta.js Background -->
+  <div class="vanta-background" id="vanta-bg"></div>
+  
+  <div class="content-wrapper">
+    <div class="notification" id="notif">
+      <i class="fas fa-check-circle"></i>
+      <span>You have successfully logged in.</span>
+    </div>
 
-  <header class="navbar">
-    <h1>Student Management System</h1>
-    <div class="menu-container">
-      <button class="menu-btn">⋮</button>
-      <div class="dropdown">
-        <img src="profile.jpg" alt="Profile" class="profile-pic" />
-        <a href="profile.html">View Profile</a>
-        <a href="upload10.html">Upload 10th Marks</a>
-        <a href="upload11.html">Upload 11th Marks</a>
-        <a href="upload12.html">Upload 12th Marks</a>
-        <a href="#">Upload College Marks</a>
-        <a href="#">Extra Curricular Activities</a>
-        <a href="#">Achievements</a>
-        <a href="#">Feedback</a>
-        <a href="#">Settings</a>
-        <a href="logout.html">Logout</a>
+    <header class="navbar">
+      <h1>Student Management System</h1>
+      <div class="menu-container">
+        <button class="menu-btn"><i class="fas fa-bars"></i></button>
+        <div class="dropdown">
+          <img src="profile.jpg" alt="Profile" class="profile-pic" />
+          <a href="profile.html"><i class="fas fa-user"></i> View Profile</a>
+          <a href="upload10.html"><i class="fas fa-upload"></i> Upload 10th Marks</a>
+          <a href="upload11.html"><i class="fas fa-upload"></i> Upload 11th Marks</a>
+          <a href="upload12.html"><i class="fas fa-upload"></i> Upload 12th Marks</a>
+          <a href="college.html"><i class="fas fa-graduation-cap"></i> College Marks</a>
+          <a href="#"><i class="fas fa-running"></i> Activities</a>
+          <a href="#"><i class="fas fa-trophy"></i> Achievements</a>
+          <a href="#"><i class="fas fa-comment"></i> Feedback</a>
+          <a href="#"><i class="fas fa-cog"></i> Settings</a>
+          <a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <section class="slideshow-container">
-    <div class="slide fade">
-      <img src="img1.jpg" alt="Slide 1">
-    </div>
-    <div class="slide fade">
-      <img src="img2.jpg" alt="Slide 2">
-    </div>
-    <div class="slide fade">
-      <img src="img3.jpg" alt="Slide 3">
-    </div>
-    <div class="slide fade">
-      <img src="img4.jpg" alt="Slide 4">
-    </div>
-    <div class="slide fade">
-      <img src="img5.jpg" alt="Slide 5">
-    </div>
-  </section>
-
-  <main class="container">
-
-    <a href="upload10.html" class="upload-link">
-      <section class="upload-section">
-        <h2>📚 Upload 10th Marks</h2>
-        <p>Click here to enter subject-wise marks, exam number, and year.</p>
-      </section>
-    </a>
-
-    <a href="upload11.html" class="upload-link">
-      <section class="upload-section">
-        <h2>📘 Upload 11th Marks</h2>
-        <p>Upload your 11th standard progress report or annual result.</p>
-      </section>
-    </a>
-
-    <a href="upload12.html" class="upload-link">
-      <section class="upload-section">
-        <h2>📕 Upload 12th Marks</h2>
-        <p>Attach your final 12th standard marksheet. This is typically used during placements and college
-          verifications.
-        </p>
-      </section>
-    </a>
-
-    <a href="uploadcollege.html" class="upload-link"></a>
-    <section class="upload-section">
-      <h2>🎓 Upload College Marks & Grades</h2>
-      <p>Upload consolidated college marksheets or semester-wise . Clearly label your files with semester info.</p>
-    </section></a>
-
-    <section class="upload-section">
-      <h2>🏅 Extra Curricular Activities</h2>
-      <p>Write a short summary of clubs, sports, volunteering, or other activities you've participated in.</p>
-      <textarea placeholder="Eg: Captain of college football team, active NSS volunteer..."></textarea>
+    <section class="slideshow-container">
+      <div class="slide active">
+        <img src="img1.jpg" alt="Education">
+        <div class="slide-content">
+          <h2>Track Your Academic Journey</h2>
+          <p>Manage all your academic records in one place and visualize your progress over time.</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="img2.jpg" alt="Graduation">
+        <div class="slide-content">
+          <h2>Prepare for Your Future</h2>
+          <p>Your academic records help institutions and employers understand your capabilities.</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="img3.jpg" alt="Achievement">
+        <div class="slide-content">
+          <h2>Showcase Your Achievements</h2>
+          <p>Highlight your extracurricular activities and accomplishments alongside your academic records.</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="img4.jpg" alt="Technology">
+        <div class="slide-content">
+          <h2>Modern Learning Platform</h2>
+          <p>Experience seamless management of your educational journey with our intuitive system.</p>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="img5.jpg" alt="Success">
+        <div class="slide-content">
+          <h2>Your Path to Success</h2>
+          <p>We provide the tools you need to organize and present your academic achievements.</p>
+        </div>
+      </div>
+      
+      <div class="dots-container">
+        <div class="dot active" onclick="currentSlide(1)"></div>
+        <div class="dot" onclick="currentSlide(2)"></div>
+        <div class="dot" onclick="currentSlide(3)"></div>
+        <div class="dot" onclick="currentSlide(4)"></div>
+        <div class="dot" onclick="currentSlide(5)"></div>
+      </div>
     </section>
 
-    <section class="upload-section">
-      <h2>🏆 Achievements</h2>
-      <p>Mention notable achievements like awards, competition wins, scholarships, or certifications.</p>
-      <textarea placeholder="Eg: Winner of TechFest coding challenge 2023, Google Cloud Certified..."></textarea>
-    </section>
-  </main>
+    <main class="container">
+      <a href="upload10.html" class="upload-link">
+        <section class="upload-section fade-in">
+          <h2><i class="fas fa-book"></i> Upload 10th Marks</h2>
+          <p>Click here to enter subject-wise marks, exam number, and year. Your 10th marks are important for future academic applications.</p>
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+            <button class="btn btn-outline">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </div>
+        </section>
+      </a>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Student Management System. All rights reserved.</p>
-    <p>Contact us: support@smsproject.com</p>
-  </footer>
+      <a href="upload11.html" class="upload-link">
+        <section class="upload-section fade-in">
+          <h2><i class="fas fa-book-open"></i> Upload 11th Marks</h2>
+          <p>Upload your 11th standard progress report or annual result. These marks help track your academic consistency.</p>
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+            <button class="btn btn-outline">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </div>
+        </section>
+      </a>
 
+      <a href="upload12.html" class="upload-link">
+        <section class="upload-section fade-in">
+          <h2><i class="fas fa-graduation-cap"></i> Upload 12th Marks</h2>
+          <p>Attach your final 12th standard marksheet. This is typically used during placements and college verifications.</p>
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+            <button class="btn btn-outline">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </div>
+        </section>
+      </a>
+
+      <a href="college.html" class="upload-link">
+        <section class="upload-section fade-in">
+          <h2><i class="fas fa-university"></i> College Marks & Grades</h2>
+          <p>1.Upload consolidated college marks or semester-wise results. </p>
+          <p>2.Calculate CGPA.</p>
+          <p>3.Track Attendance and Academic performance.</p>
+          <p>4.Track internal marks too.</p>
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+          </div>
+        </section>
+      </a>
+
+      <section class="upload-section fade-in">
+        <h2><i class="fas fa-running"></i> Extra Curricular Activities</h2>
+        <p>Write a short summary of clubs, sports, volunteering, or other activities you've participated in.</p>
+        <textarea placeholder="Eg: Captain of college football team, active NSS volunteer..."></textarea>
+        <div class="action-buttons">
+          <button class="btn btn-primary">
+            <i class="fas fa-upload"></i> Submit
+          </button>
+        </div>
+      </section>
+
+      <section class="upload-section fade-in">
+        <h2><i class="fas fa-trophy"></i> Achievements</h2>
+        <p>Mention notable achievements like awards, competition wins, scholarships, or certifications.</p>
+        <textarea placeholder="Eg: Winner of TechFest coding challenge 2023, Google Cloud Certified..."></textarea>
+        <div class="action-buttons">
+          <button class="btn btn-primary">
+            <i class="fas fa-upload"></i> Submit
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Student Management System. All rights reserved.</p>
+      <p><i class="fas fa-envelope"></i> rajaram950569@gmail.com | <i class="fas fa-phone"></i> +91 8682005828</p>
+    </footer>
+  </div>
+
+  <!-- Vanta.js & Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.rings.min.js"></script>
   <script>
-    let slideIndex = 0;
-    showSlides();
+    // Initialize Vanta.js background
+    VANTA.RINGS({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      backgroundColor: 0x111122,
+      color: 0x4361ee
+    });
 
-    function showSlides() {
-      const slides = document.getElementsByClassName("slide");
-      for (let i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-      }
-      slideIndex++;
-      if (slideIndex > slides.length) { slideIndex = 1 }
-      slides[slideIndex - 1].style.display = "block";
-      setTimeout(showSlides, 3000); // Change image every 3s
+    // Slideshow functionality
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
     }
-  </script>
 
-  <script>
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+      let i;
+      const slides = document.getElementsByClassName("slide");
+      const dots = document.getElementsByClassName("dot");
+      
+      if (n > slides.length) { slideIndex = 1 }
+      if (n < 1) { slideIndex = slides.length }
+      
+      for (i = 0; i < slides.length; i++) {
+        slides[i].classList.remove("active");
+      }
+      
+      for (i = 0; i < dots.length; i++) {
+        dots[i].classList.remove("active");
+      }
+      
+      slides[slideIndex-1].classList.add("active");
+      dots[slideIndex-1].classList.add("active");
+    }
+
+    // Auto-advance slides
+    setInterval(() => {
+      plusSlides(1);
+    }, 5000);
+
+    // Notification timeout
     setTimeout(() => {
       document.getElementById('notif').style.display = 'none';
-    }, 3000); // Hide after 3 seconds
+    }, 3000);
+
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+      const uploadSections = document.querySelectorAll('.upload-section');
+      
+      function animateOnScroll() {
+        uploadSections.forEach((section, index) => {
+          const sectionPosition = section.getBoundingClientRect().top;
+          const screenPosition = window.innerHeight / 1.3;
+          
+          if (sectionPosition < screenPosition) {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+          }
+        });
+      }
+      
+      // Set initial state
+      uploadSections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.5s ease ' + (Math.random() * 0.3) + 's';
+      });
+      
+      // Trigger on load and scroll
+      animateOnScroll();
+      window.addEventListener('scroll', animateOnScroll);
+    });
   </script>
-
 </body>
-
 </html>
