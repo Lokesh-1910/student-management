@@ -1,10 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 // MySQL Connection
 const db = mysql.createConnection({
@@ -71,22 +78,116 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Route to fetch user data based on user ID
-app.get('/profile/:id', (req, res) => {
-  const userId = req.params.id;
-
-  const sql = 'SELECT * FROM users WHERE id = ?';
-  db.query(sql, [userId], (err, result) => {
+// API endpoint to get user profile
+app.get('/api/user-profile', (req, res) => {
+  const userId = req.query.id || 1; // Default to user ID 1 if not specified
+  
+  const query = `
+    SELECT 
+      id, firstname, lastname, email, 
+      DATE_FORMAT(dob, '%Y-%m-%d') as dob, 
+      gender, mobile, address, hobby, skills, interest
+    FROM users 
+    WHERE id = ?
+  `;
+  
+  db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error('Error fetching user data:', err);
-      return res.status(500).json({ error: 'Failed to fetch user data' });
+      console.error('Error fetching user profile:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const user = results[0];
+    
+    // Format the response
+    const response = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      fullname: `${user.firstname} ${user.lastname}`,
+      dob: user.dob,
+      gender: user.gender,
+      email: user.email,
+      mobile: user.mobile || 'Not provided',
+      address: user.address || 'Not provided',
+      interest: user.interest || 'Not provided',
+      hobby: user.hobby || 'Not provided',
+      skills: user.skills || 'Not provided'
+    };
+    
+    res.json(response);
+  });
+});
+
+// Serve the profile page
+app.get('/profile', (req, res) => {
+  res.sendFile(__dirname + '/profile.html');
+});
+
+// Add this to your existing server.js
+
+// API endpoint to update user profile
+app.post('/api/update-profile', (req, res) => {
+  const userId = req.query.id;
+  const {
+    firstname = '',
+    lastname = '',
+    email = '',
+    mobile = '',
+    dob = null,
+    gender = '',
+    address = '',
+    hobby = '',
+    skills = '',
+    interest = ''
+  } = req.body;
+
+  if (!firstname || !lastname || !email) {
+    return res.status(400).json({ error: 'First name, last name, and email are required' });
+  }
+
+  const query = `
+    UPDATE users 
+    SET 
+      firstname = ?,
+      lastname = ?,
+      email = ?,
+      mobile = ?,
+      dob = ?,
+      gender = ?,
+      address = ?,
+      hobby = ?,
+      skills = ?,
+      interest = ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [
+    firstname,
+    lastname,
+    email,
+    mobile,
+    dob,
+    gender,
+    address,
+    hobby,
+    skills,
+    interest,
+    userId
+  ], (err, results) => {
+    if (err) {
+      console.error('Error updating user profile:', err);
+      return res.status(500).json({ error: 'Database error' });
     }
 
-    if (result.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json(result[0]); // Send user details
+    res.json({ success: true, message: 'Profile updated successfully' });
   });
 });
 

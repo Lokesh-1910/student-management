@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile | Student Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .edit-profile-container {
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .edit-profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .edit-profile-header h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #e9ecef;
+      color: var(--dark);
+      margin-right: 15px;
+    }
+
+    .btn-secondary:hover {
+      background: #dee2e6;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .success-message {
+      color: var(--success);
+      background: rgba(76, 175, 80, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .edit-profile-container {
+        padding: 30px 20px;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="edit-profile-container">
+    <div class="edit-profile-header">
+      <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+    </div>
+
+    <div class="success-message" id="success-message">
+      Profile updated successfully!
+    </div>
+
+    <form id="edit-profile-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" name="firstname" required>
+        </div>
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" name="lastname" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="mobile">Mobile</label>
+          <input type="tel" id="mobile" name="mobile">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dob">
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea id="address" name="address"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="hobby">Hobbies</label>
+        <input type="text" id="hobby" name="hobby" placeholder="Reading, Sports, Music, etc.">
+      </div>
+
+      <div class="form-group">
+        <label for="skills">Skills</label>
+        <input type="text" id="skills" name="skills" placeholder="Programming, Design, Leadership, etc.">
+      </div>
+
+      <div class="form-group">
+        <label for="interest">Interests</label>
+        <input type="text" id="interest" name="interest" placeholder="AI, Robotics, Art, etc.">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const userId = localStorage.getItem("user_id") || 1;
+      const form = document.getElementById('edit-profile-form');
+      const successMessage = document.getElementById('success-message');
+      const cancelBtn = document.getElementById('cancel-btn');
+
+      // Load current user data
+      fetch(`/api/user-profile?id=${userId}`)
+        .then(response => response.json())
+        .then(userData => {
+          document.getElementById('firstname').value = userData.firstname || '';
+          document.getElementById('lastname').value = userData.lastname || '';
+          document.getElementById('email').value = userData.email || '';
+          document.getElementById('mobile').value = userData.mobile || '';
+          document.getElementById('dob').value = userData.dob || '';
+          document.getElementById('gender').value = userData.gender || '';
+          document.getElementById('address').value = userData.address || '';
+          document.getElementById('hobby').value = userData.hobby || '';
+          document.getElementById('skills').value = userData.skills || '';
+          document.getElementById('interest').value = userData.interest || '';
+        })
+        .catch(error => {
+          console.error('Error loading profile data:', error);
+        });
+
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+          firstname: form.firstname.value,
+          lastname: form.lastname.value,
+          email: form.email.value,
+          mobile: form.mobile.value,
+          dob: form.dob.value,
+          gender: form.gender.value,
+          address: form.address.value,
+          hobby: form.hobby.value,
+          skills: form.skills.value,
+          interest: form.interest.value
+        };
+
+        fetch(`/api/update-profile?id=${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Update failed');
+          }
+          return response.json();
+        })
+        .then(data => {
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 1500);
+        })
+        .catch(error => {
+          console.error('Error updating profile:', error);
+          alert('Error updating profile. Please try again.');
+        });
+      });
+
+      // Cancel button
+      cancelBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to discard changes?')) {
+          window.location.href = 'profile.html';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

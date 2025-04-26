@@ -210,6 +210,12 @@
       animation: spin 1s linear infinite;
     }
 
+    .error {
+      color: var(--danger);
+      text-align: center;
+      padding: 20px;
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -273,81 +279,80 @@
   </div>
 
   <script>
-    // Simulate loading user data
     document.addEventListener('DOMContentLoaded', function() {
       const userId = localStorage.getItem("user_id") || 1;
-      
-      // Show loading state
       const profileDetails = document.getElementById('profile-details');
+
+      // Add edit functionality
+      document.getElementById('edit-profile').addEventListener('click', function() {
+        window.location.href = 'edit-profile.html';
+      });
       
-      // Simulate API call with timeout
-      setTimeout(() => {
-        // This would be replaced with actual fetch call
-        // fetch(`/user-profile?id=${userId}`).then(...)
-        
-        // Mock user data
-        const userData = {
-          firstname: "John",
-          lastname: "Doe",
-          dob: "1995-05-15",
-          gender: "Male",
-          email: "john.doe@example.com",
-          mobile: "+1 (555) 123-4567",
-          address: "123 Main St, Anytown, USA",
-          joined: "January 2020"
-        };
-        
-        // Update profile
-        document.getElementById('fullname').textContent = `${userData.firstname} ${userData.lastname}`;
-        document.getElementById('email').textContent = userData.email;
-        document.getElementById('profile-pic').src = `https://source.unsplash.com/random/300x300/?portrait,${userData.firstname}`;
-        
-        // Generate details cards
-        profileDetails.innerHTML = `
-          <div class="detail-card">
-            <div class="detail-label">First Name</div>
-            <div class="detail-value" id="firstname">${userData.firstname}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Last Name</div>
-            <div class="detail-value" id="lastname">${userData.lastname}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Date of Birth</div>
-            <div class="detail-value" id="dob">${new Date(userData.dob).toLocaleDateString()}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Gender</div>
-            <div class="detail-value" id="gender">${userData.gender}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Email</div>
-            <div class="detail-value" id="email-detail">${userData.email}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Mobile</div>
-            <div class="detail-value" id="mobile">${userData.mobile}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Address</div>
-            <div class="detail-value" id="address">${userData.address}</div>
-          </div>
-          <div class="detail-card">
-            <div class="detail-label">Member Since</div>
-            <div class="detail-value" id="joined">${userData.joined}</div>
-          </div>
-        `;
-        
-        // Add edit functionality
-        document.getElementById('edit-profile').addEventListener('click', function() {
-          alert('Edit profile functionality would open a modal or form here');
+      document.getElementById('edit-details').addEventListener('click', function() {
+        alert('Edit details functionality would open a modal or form here');
+      });
+
+      fetch(`/api/user-profile?id=${userId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(userData => {
+          // Update profile
+          document.getElementById('fullname').textContent = userData.fullname || `${userData.firstname} ${userData.lastname}`;
+          document.getElementById('email').textContent = userData.email;
+          document.getElementById('profile-pic').src = `https://source.unsplash.com/random/300x300/?portrait,${userData.firstname}`;
+
+          // Generate details cards
+          profileDetails.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-label">First Name</div>
+              <div class="detail-value" id="firstname">${userData.firstname}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Last Name</div>
+              <div class="detail-value" id="lastname">${userData.lastname}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Date of Birth</div>
+              <div class="detail-value" id="dob">${userData.dob ? new Date(userData.dob).toLocaleDateString() : 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Gender</div>
+              <div class="detail-value" id="gender">${userData.gender || 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Email</div>
+              <div class="detail-value" id="email-detail">${userData.email}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Mobile</div>
+              <div class="detail-value" id="mobile">${userData.mobile || 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Address</div>
+              <div class="detail-value" id="address">${userData.address || 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Hobby</div>
+              <div class="detail-value" id="hobby">${userData.hobby || 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Skills</div>
+              <div class="detail-value" id="skills">${userData.skills || 'Not provided'}</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Interest</div>
+              <div class="detail-value" id="interest">${userData.interest || 'Not provided'}</div>
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error('Error fetching user profile:', error);
+          profileDetails.innerHTML = '<p class="error">Error loading profile data. Please try again later.</p>';
         });
-        
-        document.getElementById('edit-details').addEventListener('click', function() {
-          alert('Edit details functionality would open a modal or form here');
-        });
-        
-      }, 1500); // Simulate network delay
     });
   </script>
 </body>
