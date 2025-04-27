@@ -12,6 +12,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(express.json());
+
 
 // MySQL Connection
 const db = mysql.createConnection({
@@ -415,8 +417,150 @@ app.post('/upload12', (req, res) => {
   });
 });
 
+// API endpoint to upload CIE 1 marks
+app.post('/api/upload-cie1', (req, res) => {
+  console.log('Incoming body:', req.body);
 
+  const { name, reg_no, paper_count, subjects, marks } = req.body;
 
+  // Check all marks are valid (0-50)
+  for (const mark of marks) {
+    if (mark < 0 || mark > 50) {
+      return res.status(400).json({ success: false, message: 'Marks must be between 0-50' });
+    }
+  }
+
+  // Prepare data for database
+  const cieData = {
+    student_name: name,
+    register_number: reg_no,
+    subject_count: paper_count,
+    subjects: JSON.stringify(subjects),
+    marks: JSON.stringify(marks)
+  };
+
+  // Insert into database
+  const query = `
+    INSERT INTO sem1_cie1 
+    (student_name, register_number, subject_count, subjects, marks)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [
+    cieData.student_name,
+    cieData.register_number,
+    cieData.subject_count,
+    cieData.subjects,
+    cieData.marks
+  ], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    res.json({ 
+      success: true,
+      message: 'CIE 1 marks uploaded successfully',
+      record_id: results.insertId
+    });
+  });
+});
+
+app.post('/api/upload-cie2', (req, res) => {
+  console.log('Incoming body:', req.body);
+
+  const { name, reg_no, paper_count, subjects, marks } = req.body;
+
+  // Check all marks are valid (0-50)
+  for (const mark of marks) {
+    if (mark < 0 || mark > 50) {
+      return res.status(400).json({ success: false, message: 'Marks must be between 0-50' });
+    }
+  }
+
+  // Prepare data for database
+  const cieData = {
+    student_name: name,
+    register_number: reg_no,
+    subject_count: paper_count,
+    subjects: JSON.stringify(subjects),
+    marks: JSON.stringify(marks)
+  };
+
+  // Insert into database
+  const query = `
+    INSERT INTO sem1_cie2 
+    (student_name, register_number, subject_count, subjects, marks)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [
+    cieData.student_name,
+    cieData.register_number,
+    cieData.subject_count,
+    cieData.subjects,
+    cieData.marks
+  ], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    res.json({ 
+      success: true,
+      message: 'CIE 2 marks uploaded successfully',
+      record_id: results.insertId
+    });
+  });
+});
+
+app.post('/api/upload-cie3', (req, res) => {
+  console.log('Incoming body:', req.body);
+
+  const { name, reg_no, paper_count, subjects, marks } = req.body;
+
+  // Check all marks are valid (0-50)
+  for (const mark of marks) {
+    if (mark < 0 || mark > 50) {
+      return res.status(400).json({ success: false, message: 'Marks must be between 0-50' });
+    }
+  }
+
+  // Prepare data for database
+  const cieData = {
+    student_name: name,
+    register_number: reg_no,
+    subject_count: paper_count,
+    subjects: JSON.stringify(subjects),
+    marks: JSON.stringify(marks)
+  };
+
+  // Insert into database
+  const query = `
+    INSERT INTO sem1_cie3 
+    (student_name, register_number, subject_count, subjects, marks)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [
+    cieData.student_name,
+    cieData.register_number,
+    cieData.subject_count,
+    cieData.subjects,
+    cieData.marks
+  ], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    res.json({ 
+      success: true,
+      message: 'CIE 3 marks uploaded successfully',
+      record_id: results.insertId
+    });
+  });
+});
 
 // Start server
 app.listen(port, () => {

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semester 1 CIE 1 Marks Upload</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .form-header h2 {
+      color: #4361ee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: #f8f9fa;
+      color: #4361ee;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .subject-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .subject-row input[type="text"] {
+      flex: 2;
+    }
+
+    .subject-row input[type="number"] {
+      flex: 1;
+    }
+
+    .btn-submit {
+      background: #4361ee;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+      background: #3f37c9;
+    }
+
+    .error-message {
+      color: #f44336;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .subject-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .subject-row input[type="text"],
+      .subject-row input[type="number"] {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form-container">
+    <div class="form-header">
+      <h2><i class="fas fa-upload"></i> Semester 1 - CIE 1 Marks</h2>
+      <button class="back-btn" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+    <form id="cie1-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="reg_no">Register Number</label>
+          <input type="text" id="reg_no" name="reg_no" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="paper_count">Number of Subjects</label>
+        <select id="paper_count" name="paper_count" required onchange="generateSubjectFields()">
+          <option value="" disabled selected>Select number of subjects</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+
+      <div id="subject-fields">
+        <!-- Subject fields will be generated here -->
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-upload"></i> Upload CIE 1 Marks
+      </button>
+    </form>
+  </div>
+
+  <script>
+     
+      // Generate subject fields based on selected count
+      function generateSubjectFields() {
+        const count = parseInt(document.getElementById('paper_count').value);
+        const container = document.getElementById('subject-fields');
+        container.innerHTML = '';
+    
+        for (let i = 1; i <= count; i++) {
+          const row = document.createElement('div');
+          row.className = 'subject-row';
+          row.innerHTML = `
+            <input type="text" name="subject_${i}" id="subject_${i}" placeholder="Subject ${i} Name" required>
+            <input type="number" name="mark_${i}" id="mark_${i}" placeholder="Mark (Max 50)" min="0" max="50" required>
+            <div class="error-message" id="error_${i}">Mark must be between 0-50</div>
+          `;
+          container.appendChild(row);
+    
+          // Add validation for mark input
+          const markInput = row.querySelector(`input[name="mark_${i}"]`);
+          markInput.addEventListener('input', function () {
+            validateMark(this);
+          });
+        }
+      }
+    
+      // Validate mark input
+      function validateMark(input) {
+        const mark = parseInt(input.value);
+        const errorElement = input.parentNode.querySelector('.error-message');
+    
+        if (isNaN(mark)) {
+          errorElement.style.display = 'none';
+          return true;
+        }
+    
+        if (mark < 0 || mark > 50) {
+          errorElement.style.display = 'block';
+          return false;
+        } else {
+          errorElement.style.display = 'none';
+          return true;
+        }
+      }
+    
+    window.addEventListener('DOMContentLoaded', function() {
+      // Read URL params and fill if available
+      const urlParams = new URLSearchParams(window.location.search);
+    
+      if (urlParams.has('name')) {
+        document.getElementById('name').value = urlParams.get('name');
+      }
+      if (urlParams.has('reg_no')) {
+        document.getElementById('reg_no').value = urlParams.get('reg_no');
+      }
+      if (urlParams.has('paper_count')) {
+        document.getElementById('paper_count').value = urlParams.get('paper_count');
+        generateSubjectFields(); // generate fields immediately
+        const count = parseInt(urlParams.get('paper_count'));
+        for (let i = 1; i <= count; i++) {
+          if (urlParams.has(`subject_${i}`)) {
+            document.getElementById(`subject_${i}`).value = urlParams.get(`subject_${i}`);
+          }
+          if (urlParams.has(`mark_${i}`)) {
+            document.getElementById(`mark_${i}`).value = urlParams.get(`mark_${i}`);
+          }
+        }
+      }
+    
+      // Form submission
+      document.getElementById('cie1-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+    
+        // Validate all marks
+        const markInputs = document.querySelectorAll('input[type="number"]');
+        let allValid = true;
+    
+        markInputs.forEach(input => {
+          if (!validateMark(input)) {
+            allValid = false;
+          }
+        });
+    
+        if (!allValid) {
+          alert('Please correct the invalid marks (must be between 0-50)');
+          return;
+        }
+    
+        // Prepare form data
+        const formData = new FormData(this);
+        const data = {
+          name: formData.get('name'),
+          reg_no: formData.get('reg_no'),
+          paper_count: formData.get('paper_count'),
+          subjects: [],
+          marks: []
+        };
+    
+        for (let i = 1; i <= parseInt(data.paper_count); i++) {
+          data.subjects.push(formData.get(`subject_${i}`));
+          data.marks.push(parseInt(formData.get(`mark_${i}`)));
+        }
+    
+        // Send to server
+        fetch('/api/upload-cie1', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            alert('CIE 1 marks uploaded successfully!');
+            window.location.href = 'semester1.html';
+          } else {
+            alert('Error: ' + result.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to upload marks. Please try again.');
+        });
+      });
+    });
+    </script>
+    
+</body>
+
+</html>

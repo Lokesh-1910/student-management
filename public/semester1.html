@@ -325,8 +325,8 @@
   <div class="header fade-in">
     <div class="header-content">
       <div>
-        <h1><i class="fas fa-book-open"></i> Semester 4 Details</h1>
-        <p>Computer Science Engineering | 2022-2023</p>
+        <h1><i class="fas fa-book-open"></i> Semester 1 Details</h1>
+        <p>Track performance and attendance percentage</p>
       </div>
       <button class="back-btn" onclick="window.history.back()">
         <i class="fas fa-arrow-left"></i> Back
@@ -483,7 +483,164 @@
         <div class="scale-item">10.0</div>
       </div>
     </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-upload"></i> CIE 1 Marks Upload</h2>
+        <div class="card-actions">
+          <button class="btn-icon" title="View Guidelines">
+            <i class="fas fa-info-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 1 Marks</h3>
+        <p style="color: #666; margin-bottom: 20px;">Upload marks for the first internal assessment of all subjects</p>
+        <button 
+          class="btn-icon" 
+          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie1.html'"
+        >
+          <i class="fas fa-upload"></i> Upload Marks
+        </button>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-upload"></i> CIE 2 Marks Upload</h2>
+        <div class="card-actions">
+          <button class="btn-icon" title="View Guidelines">
+            <i class="fas fa-info-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 2 Marks</h3>
+        <p style="color: #666; margin-bottom: 20px;">Upload marks for the second internal assessment of all subjects</p>
+        <button 
+          class="btn-icon" 
+          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie2.html'"
+        >
+          <i class="fas fa-upload"></i> Upload Marks
+        </button>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-upload"></i> CIE 3 Marks Upload</h2>
+        <div class="card-actions">
+          <button class="btn-icon" title="View Guidelines">
+            <i class="fas fa-info-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 3 Marks</h3>
+        <p style="color: #666; margin-bottom: 20px;">Upload marks for the third internal assessment of all subjects</p>
+        <button 
+          class="btn-icon" 
+          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie3.html'"
+        >
+          <i class="fas fa-upload"></i> Upload Marks
+        </button>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-upload"></i> Semester Grades</h2>
+        <div class="card-actions">
+          <button class="btn-icon" title="View Guidelines">
+            <i class="fas fa-info-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <h3 style="margin-bottom: 10px; color: var(--dark);">Upload Semester Grades</h3>
+        <p style="color: #666; margin-bottom: 20px;">Upload grades for the semester of all subjects</p>
+        <button 
+          class="btn-icon" 
+          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='upload-cie1.html'"
+        >
+          <i class="fas fa-upload"></i> Upload Marks
+        </button>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-percentage"></i> Attendance Percentage</h2>
+        <div class="card-actions">
+          <button class="btn-icon" title="View Guidelines">
+            <i class="fas fa-info-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+          <div style="font-size: 2.5rem; color: var(--primary);">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div style="flex: 1;">
+            <h3 style="margin-bottom: 5px; color: var(--dark);">Current Attendance</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input 
+                type="number" 
+                id="attendance-percentage"
+                min="0" 
+                max="100" 
+                placeholder="Enter percentage"
+                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"
+              >
+              <span style="font-weight: bold; color: var(--primary);">%</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button 
+            class="btn-icon" 
+            style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 500; background: var(--primary); color: white;"
+            onclick="updateAttendance()"
+          >
+            <i class="fas fa-save"></i> Update
+          </button>
+          <button 
+            class="btn-icon" 
+            style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 500;"
+            onclick="window.location.href='attendance-details.html'"
+          >
+            <i class="fas fa-chart-line"></i> View Details
+          </button>
+        </div>
+      </div>
+    </div>
+    
   </div>
+
+  <script>
+    function updateAttendance() {
+      const percentage = document.getElementById('attendance-percentage').value;
+      if (percentage && percentage >= 0 && percentage <= 100) {
+        // Here you would typically send the data to your server
+        alert(`Attendance percentage updated to ${percentage}%`);
+        // Update the UI or redirect as needed
+      } else {
+        alert('Please enter a valid percentage (0-100)');
+      }
+    }
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
