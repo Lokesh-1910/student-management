@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,7 +160,8 @@
       margin-top: 15px;
     }
 
-    .marks-table th, .marks-table td {
+    .marks-table th,
+    .marks-table td {
       padding: 12px 15px;
       text-align: left;
       border-bottom: 1px solid #eee;
@@ -292,14 +294,15 @@
       .dashboard-container {
         grid-template-columns: 1fr;
       }
-      
+
       .header-content {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
       }
-      
-      .marks-table th, .marks-table td {
+
+      .marks-table th,
+      .marks-table td {
         padding: 10px;
       }
     }
@@ -314,13 +317,102 @@
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 24px;
+    }
+
+    .card-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-box input[type="text"] {
+      padding: 8px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .search-box button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .marks-table th,
+    .marks-table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .marks-table th {
+      background-color: #f2f2f2;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="header fade-in">
     <div class="header-content">
@@ -335,6 +427,7 @@
   </div>
 
   <div class="dashboard-container">
+
     <!-- CIE Marks Card -->
     <div class="card fade-in">
       <div class="card-header">
@@ -348,7 +441,15 @@
           </button>
         </div>
       </div>
-      <table class="marks-table">
+
+      <!-- Search Box -->
+      <div class="search-box">
+        <input type="text" id="reg_no" placeholder="Enter Register Number">
+        <button onclick="fetchMarks()">Fetch</button>
+      </div>
+
+      <!-- Marks Table -->
+      <table class="marks-table" id="marks-table" style="display: none;">
         <thead>
           <tr>
             <th>Subject</th>
@@ -358,46 +459,11 @@
             <th>Avg</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Data Structures</td>
-            <td>42</td>
-            <td>38</td>
-            <td>45</td>
-            <td><strong>42</strong></td>
-          </tr>
-          <tr>
-            <td>Database Systems</td>
-            <td>38</td>
-            <td>40</td>
-            <td>43</td>
-            <td><strong>40</strong></td>
-          </tr>
-          <tr>
-            <td>Computer Networks</td>
-            <td>35</td>
-            <td>32</td>
-            <td>38</td>
-            <td><strong>35</strong></td>
-          </tr>
-          <tr>
-            <td>Operating Systems</td>
-            <td>45</td>
-            <td>42</td>
-            <td>47</td>
-            <td><strong>45</strong></td>
-          </tr>
-          <tr>
-            <td>Software Engineering</td>
-            <td>40</td>
-            <td>38</td>
-            <td>42</td>
-            <td><strong>40</strong></td>
-          </tr>
+        <tbody id="marks-body">
+          <!-- Dynamic rows will be inserted here -->
         </tbody>
       </table>
     </div>
-
     <!-- Grades Card -->
     <div class="card fade-in">
       <div class="card-header">
@@ -498,11 +564,8 @@
         </div>
         <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 1 Marks</h3>
         <p style="color: #666; margin-bottom: 20px;">Upload marks for the first internal assessment of all subjects</p>
-        <button 
-          class="btn-icon" 
-          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
-          onclick="window.location.href='Sem1_cie1.html'"
-        >
+        <button class="btn-icon" style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie1.html'">
           <i class="fas fa-upload"></i> Upload Marks
         </button>
       </div>
@@ -522,11 +585,8 @@
         </div>
         <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 2 Marks</h3>
         <p style="color: #666; margin-bottom: 20px;">Upload marks for the second internal assessment of all subjects</p>
-        <button 
-          class="btn-icon" 
-          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
-          onclick="window.location.href='Sem1_cie2.html'"
-        >
+        <button class="btn-icon" style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie2.html'">
           <i class="fas fa-upload"></i> Upload Marks
         </button>
       </div>
@@ -546,11 +606,8 @@
         </div>
         <h3 style="margin-bottom: 10px; color: var(--dark);">Upload CIE 3 Marks</h3>
         <p style="color: #666; margin-bottom: 20px;">Upload marks for the third internal assessment of all subjects</p>
-        <button 
-          class="btn-icon" 
-          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
-          onclick="window.location.href='Sem1_cie3.html'"
-        >
+        <button class="btn-icon" style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='Sem1_cie3.html'">
           <i class="fas fa-upload"></i> Upload Marks
         </button>
       </div>
@@ -570,11 +627,8 @@
         </div>
         <h3 style="margin-bottom: 10px; color: var(--dark);">Upload Semester Grades</h3>
         <p style="color: #666; margin-bottom: 20px;">Upload grades for the semester of all subjects</p>
-        <button 
-          class="btn-icon" 
-          style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
-          onclick="window.location.href='upload-cie1.html'"
-        >
+        <button class="btn-icon" style="width: auto; padding: 10px 20px; border-radius: 8px; font-weight: 500;"
+          onclick="window.location.href='upload-cie1.html'">
           <i class="fas fa-upload"></i> Upload Marks
         </button>
       </div>
@@ -596,40 +650,79 @@
           <div style="flex: 1;">
             <h3 style="margin-bottom: 5px; color: var(--dark);">Current Attendance</h3>
             <div style="display: flex; gap: 10px; align-items: center;">
-              <input 
-                type="number" 
-                id="attendance-percentage"
-                min="0" 
-                max="100" 
-                placeholder="Enter percentage"
-                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"
-              >
+              <input type="number" id="attendance-percentage" min="0" max="100" placeholder="Enter percentage"
+                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
               <span style="font-weight: bold; color: var(--primary);">%</span>
             </div>
           </div>
         </div>
         <div style="display: flex; gap: 10px;">
-          <button 
-            class="btn-icon" 
+          <button class="btn-icon"
             style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 500; background: var(--primary); color: white;"
-            onclick="updateAttendance()"
-          >
+            onclick="updateAttendance()">
             <i class="fas fa-save"></i> Update
           </button>
-          <button 
-            class="btn-icon" 
-            style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 500;"
-            onclick="window.location.href='attendance-details.html'"
-          >
+          <button class="btn-icon" style="flex: 1; padding: 10px; border-radius: 8px; font-weight: 500;"
+            onclick="window.location.href='attendance-details.html'">
             <i class="fas fa-chart-line"></i> View Details
           </button>
         </div>
       </div>
     </div>
-    
+
   </div>
 
   <script>
+
+function fetchMarks() {
+  const regNo = document.getElementById('reg_no').value.trim();
+  const table = document.getElementById('marks-table');
+  const tbody = document.getElementById('marks-body');
+  tbody.innerHTML = ''; // Clear previous data
+
+  if (!regNo) {
+    alert('Please enter a Register Number');
+    return;
+  }
+
+  // Fetch data from the server
+  fetch(`http://localhost:3000/api/fetch-marks/${regNo}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.data.length > 0) {
+        table.style.display = 'table'; // Show the table if data is fetched
+
+        // Loop through the subjects and marks
+        data.data.forEach(item => {
+          const cie1 = item.cie1 === "-" ? "-" : parseInt(item.cie1) || 0;
+          const cie2 = item.cie2 === "-" ? "-" : parseInt(item.cie2) || 0;
+          const cie3 = item.cie3 === "-" ? "-" : parseInt(item.cie3) || 0;
+          const avg = cie1 !== "-" && cie2 !== "-" && cie3 !== "-" ? Math.round((cie1 + cie2 + cie3) / 3) : "-";
+
+          const row = `<tr>
+            <td>${item.subject}</td>
+            <td>${cie1}</td>
+            <td>${cie2}</td>
+            <td>${cie3}</td>
+            <td><strong>${avg}</strong></td>
+          </tr>`;
+
+          tbody.innerHTML += row; // Append the row to the table
+        });
+      } else {
+        if (table) {
+          table.style.display = 'none';  // Hide table if no data is found
+        }
+        alert('No marks found for the given register number.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error fetching data.');
+    });
+}
+
+
     function updateAttendance() {
       const percentage = document.getElementById('attendance-percentage').value;
       if (percentage && percentage >= 0 && percentage <= 100) {
@@ -643,10 +736,11 @@
   </script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+
       // Add interactivity to buttons
       document.querySelectorAll('.btn-icon').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           const title = this.getAttribute('title');
           if (title) {
             alert(`${title} functionality would be implemented here`);
@@ -671,24 +765,25 @@
         { credit: 4, grade: 'A' },  // A = 4.0
         { credit: 3, grade: 'A-' }  // A- = 3.7
       ];
-      
+
       // Calculate total quality points
       const gradePoints = {
         'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7,
         'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1.0, 'F': 0.0
       };
-      
+
       let totalCredits = 0;
       let totalPoints = 0;
-      
+
       grades.forEach(course => {
         totalCredits += course.credit;
         totalPoints += course.credit * gradePoints[course.grade];
       });
-      
+
       const cgpa = totalPoints / totalCredits;
       return cgpa.toFixed(2);
     }
   </script>
 </body>
+
 </html>

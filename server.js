@@ -83,7 +83,7 @@ app.post('/login', (req, res) => {
 // API endpoint to get user profile
 app.get('/api/user-profile', (req, res) => {
   const userId = req.query.id || 1; // Default to user ID 1 if not specified
-  
+
   const query = `
     SELECT 
       id, firstname, lastname, email, 
@@ -92,19 +92,19 @@ app.get('/api/user-profile', (req, res) => {
     FROM users 
     WHERE id = ?
   `;
-  
+
   db.query(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching user profile:', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     const user = results[0];
-    
+
     // Format the response
     const response = {
       firstname: user.firstname,
@@ -119,7 +119,7 @@ app.get('/api/user-profile', (req, res) => {
       hobby: user.hobby || 'Not provided',
       skills: user.skills || 'Not provided'
     };
-    
+
     res.json(response);
   });
 });
@@ -458,7 +458,7 @@ app.post('/api/upload-cie1', (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error' });
     }
 
-    res.json({ 
+    res.json({
       success: true,
       message: 'CIE 1 marks uploaded successfully',
       record_id: results.insertId
@@ -506,7 +506,7 @@ app.post('/api/upload-cie2', (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error' });
     }
 
-    res.json({ 
+    res.json({
       success: true,
       message: 'CIE 2 marks uploaded successfully',
       record_id: results.insertId
@@ -554,7 +554,7 @@ app.post('/api/upload-cie3', (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error' });
     }
 
-    res.json({ 
+    res.json({
       success: true,
       message: 'CIE 3 marks uploaded successfully',
       record_id: results.insertId
@@ -562,6 +562,70 @@ app.post('/api/upload-cie3', (req, res) => {
   });
 });
 
+
+app.get('/api/fetch-marks/:reg_no', (req, res) => {
+  const regNo = req.params.reg_no;
+
+  // Query to get the marks for the given register number from each CIE table
+  const cie1Query = `SELECT subjects, marks FROM sem1_cie1 WHERE register_number = ?`;
+  const cie2Query = `SELECT marks FROM sem1_cie2 WHERE register_number = ?`;
+  const cie3Query = `SELECT marks FROM sem1_cie3 WHERE register_number = ?`;
+
+  // Fetching data from all three tables concurrently using Promise.all
+  Promise.all([
+    db.queryAsync(cie1Query, [regNo]),
+    db.queryAsync(cie2Query, [regNo]),
+    db.queryAsync(cie3Query, [regNo]),
+  ])
+    .then(([cie1Data, cie2Data, cie3Data]) => {
+      // Debugging: Log the data structure
+      console.log("CIE1 Data: ", cie1Data);
+      console.log("CIE2 Data: ", cie2Data);
+      console.log("CIE3 Data: ", cie3Data);
+
+      let cie1Marks = cie1Data.length > 0 ? cie1Data[0].marks : [];
+      let cie2Marks = cie2Data.length > 0 ? cie2Data[0].marks : [];
+      let cie3Marks = cie3Data.length > 0 ? cie3Data[0].marks : [];
+
+      // Use the subjects from cie1, as they should be the same across CIEs
+      const subjects = cie1Data.length > 0 ? cie1Data[0].subjects : [];
+
+      let data = [];
+
+      // Match the marks from cie2 and cie3 to the correct subjects in cie1
+      subjects.forEach((subject, i) => {
+        let cie2Mark = cie2Marks[i] || "-"; // Match cie2 marks to cie1 subjects
+        let cie3Mark = cie3Marks[i] || "-"; // Match cie3 marks to cie1 subjects
+
+        data.push({
+          subject: subject.trim(),
+          cie1: cie1Marks[i] || "-", // Default to "-" if CIE1 is missing
+          cie2: cie2Mark,
+          cie3: cie3Mark
+        });
+      });
+
+      res.json({ success: true, data: data });
+    })
+    .catch(err => {
+      console.error('Error fetching data from tables:', err);
+      res.status(500).json({ success: false, message: 'Error fetching data.' });
+    });
+});
+
+
+
+// Promisified query function for MySQL
+mysql.promisify = function (query, values) {
+  return new Promise((resolve, reject) => {
+    db.query(query, values, (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+};
+
+db.queryAsync = mysql.promisify;
 // Start server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
